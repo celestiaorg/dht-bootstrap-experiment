@@ -11,6 +11,7 @@ import (
 	do "github.com/pulumi/pulumi-digitalocean/sdk/v4/go/digitalocean"
 )
 
+// Config structures the data used to configure a deployment
 type Config struct {
 	Droplets map[string]Droplet `json:"droplets"`
 	// SSHKeyID is the fingerprint of the ssh key preloaded into digital ocean
@@ -19,6 +20,7 @@ type Config struct {
 	Tag string `json:"tag"`
 }
 
+// Droplet specifies each droplet
 type Droplet struct {
 	// Location is the digital ocean region for the droplet
 	// ie "nyc3"
