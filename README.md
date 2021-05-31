@@ -44,7 +44,7 @@ type Droplet struct {
 here's an example config
 ```json
 {
-    "ssh_key_id": "put your DO ssh key finger print here",
+    "ssh_key_id": "put your DO ssh key finger print here", // upload your ssh public key to your DO account
     "tag": "devnet",
     "droplets": {
         "validator1": {
