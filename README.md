@@ -8,6 +8,12 @@ install `pulumi` [here](https://www.pulumi.com/docs/get-started/install/)
 
 clone or fork this repo
 
+## Export your DO access token
+
+```
+export DIGITALOCEAN_ACCESS_TOKEN="your token"
+```
+
 ## Configuration
 
 The config defines everything needed to spin up. Save it to this repo as `config.json`
