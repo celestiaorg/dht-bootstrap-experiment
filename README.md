@@ -1,17 +1,26 @@
 # devnet
 
-Spin up, deliver a payload, issue commands to, and collect the logs of all of those droplets using a config.
+This is a quick repo to spin up digital ocean droplets, deliver payloads, issue commands to, and collect the logs in real time of those droplets using a config.
 
 ## Install
-currently using pulumi to manage spinning up and down droplets. We could just use the digital ocean go API, but this seemed like a better way to make sure that we don't spin up too many droplets. This can change.
+currently using pulumi to manage spinning up and down droplets. We could just use the digital ocean go API or terraform, but this seemed like a better way to make sure that we don't spin up too many droplets, while not using the terraform DSL. This can change.
+
 install `pulumi` [here](https://www.pulumi.com/docs/get-started/install/)
 
 clone or fork this repo
 
+## Upload a SSH public key to digital
+
+have a public ssh key uploaded to DO [uploaded to DO](https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/to-account/)
+
 ## Export your DO access token
 
-```
+```sh
 export DIGITALOCEAN_ACCESS_TOKEN="your token"
+# the program will ask you to type your ssh password during execution if you don't want to export it. 
+# Can also set to "nil" to ignore prompt and use "" as a password. 
+# It also looks for the signing key in the default location $HOME/.ssh/ and this has to be changed manually as of now.
+export SSH_PASS="your ssh pass"
 ```
 
 ## Configuration
@@ -54,7 +63,7 @@ type Droplet struct {
 here's an example config
 ```json
 {
-    "ssh_key_id": "put your DO ssh key finger print here", // upload your ssh public key to your DO account
+    "ssh_key_id": "put your DO ssh key finger print here",
     "tag": "devnet",
     "droplets": {
         "validator1": {
@@ -88,27 +97,27 @@ here's an example config
 
 go to the pulumi directory
 
-```
+```sh
 cd ./pulumi
 ```
 
 after setting up pulumi, spin up the nodes by following the prompts
 
-```
+```sh
 pulumi up
 ```
 
 compile `devnet` by calling `go build` in this directory
 
 call 
-```
+```sh
 devnet init /path/to/config.json
 ``` 
 
-to deliver the specified payloads to the droplets (including a `public_ipv4s.json` file with all the deployed droplet's public IPs), call the initial commands, and then it will start saving the logs of those commands to the files specified in the config. This should overwrite any preexisting payloads, so no need to spin up and destroy droplets everytime.
+to deliver the specified payloads to the droplets (including a `public_ipv4s.json` file with all the deployed droplet's public IPs), call the init command, and then it will start saving the logs of those commands to the files specified in the config. This should overwrite any preexisting payloads, so no need to spin up and destroy droplets everytime.
 
-don't forget to change back the pulumi directory and spin down the nodes by following the prompts
+don't forget to change back the pulumi directory and spin down the nodes by following the prompts after calling 
 
-```
+```sh
 pulumi destroy
 ```

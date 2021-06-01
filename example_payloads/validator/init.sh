@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./root/tendermint init
+./root/validator/tendermint init
