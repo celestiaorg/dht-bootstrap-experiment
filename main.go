@@ -7,10 +7,8 @@ import (
 	"os"
 	"sync"
 
-	"github.com/BurntSushi/toml"
 	"github.com/digitalocean/godo"
 	"github.com/evan-forbes/devnet/config"
-	llconfig "github.com/lazyledger/lazyledger-core/config"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +20,6 @@ func main() {
 
 	rootCmd.AddCommand(
 		InitCmd(),
-		NewTendermintConfigCmd(),
 	)
 
 	if err := rootCmd.Execute(); err != nil {
@@ -125,37 +122,4 @@ func InitCmd() *cobra.Command {
 			return nil
 		},
 	}
-}
-
-func NewTendermintConfigCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:     "creates a default tendermint config at the path provided",
-		Aliases: []string{"newLazyConfig", "i"},
-		RunE: func(cmd *cobra.Command, args []string) error {
-			path := "."
-			if len(args) == 1 {
-				path = args[0]
-			}
-			WriteTendermintConfig(path, llconfig.DefaultConfig())
-			return nil
-		},
-	}
-}
-
-func LoadTendermintConfig(path string) (llconfig.Config, error) {
-	var cfg llconfig.Config
-	_, err := toml.DecodeFile(path, &cfg)
-	if err != nil {
-		return cfg, fmt.Errorf("failed to load config from %q: %w", path, err)
-	}
-	return cfg, cfg.ValidateBasic()
-}
-
-func WriteTendermintConfig(path string, cfg *llconfig.Config) error {
-	err := cfg.ValidateBasic()
-	if err != nil {
-		return err
-	}
-	llconfig.WriteConfigFile(path, cfg)
-	return nil
 }
