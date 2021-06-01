@@ -82,11 +82,17 @@ func InitCmd() *cobra.Command {
 
 			defer manager.CloseAll()
 
-			err = conf.WriteIPs()
+			// save a json representation of the public IPs to each payload dir
+			err = conf.WriteIPsJson()
 			if err != nil {
 				return err
 			}
-			fmt.Println("wrote public IPs to payloads")
+
+			// save a bash script to export all public IPs as env vars
+			err = conf.WriteIPsBash()
+			if err != nil {
+				return err
+			}
 
 			// deliver the payloads via scp
 			for name, conn := range manager.Conns {

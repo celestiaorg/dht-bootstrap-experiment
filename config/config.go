@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
 	"io/ioutil"
+	"os"
 
 	"github.com/digitalocean/godo"
 	do "github.com/pulumi/pulumi-digitalocean/sdk/v4/go/digitalocean"
@@ -145,9 +147,9 @@ func WriteConfig(path string, config Config) error {
 	return ioutil.WriteFile(path, configData, 0700)
 }
 
-// WriteIPs collects all of the public IPv4s of the existing droplets and writes
-// them to each unique payload path
-func (c Config) WriteIPs() error {
+// WriteIPsJson collects all of the public IPv4s of the existing droplets and writes
+// them to a json file in each unique payload path
+func (c Config) WriteIPsJson() error {
 	ips, err := c.exportIPs()
 	if err != nil {
 		return err
@@ -162,6 +164,39 @@ func (c Config) WriteIPs() error {
 	}
 	for payPath := range uniquePayloadPaths {
 		err = ioutil.WriteFile(fmt.Sprintf("%s/%s", payPath, "public_ipv4s.json"), data, 0700)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c Config) WriteIPsBash() error {
+	const bashTemplate = `
+#!/bin/bash
+{{ range $name, $ip := . }}
+export {{$name}}="{{$ip}}"
+{{ end }}
+`
+	t, err := template.New("baships").Parse(bashTemplate)
+	if err != nil {
+		return err
+	}
+	ips, err := c.exportIPs()
+	if err != nil {
+		return err
+	}
+	uniquePayloadPaths := make(map[string]struct{})
+	for _, drop := range c.Droplets {
+		uniquePayloadPaths[drop.Payload] = struct{}{}
+	}
+	for payPath := range uniquePayloadPaths {
+		file, err := os.OpenFile(fmt.Sprintf("%s/%s", payPath, "public_ipv4s.sh"), os.O_CREATE|os.O_WRONLY, 0700)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		err = t.Execute(file, ips)
 		if err != nil {
 			return err
 		}

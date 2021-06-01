@@ -114,7 +114,7 @@ call
 devnet init /path/to/config.json
 ``` 
 
-to deliver the specified payloads to the droplets (including a `public_ipv4s.json` file with all the deployed droplet's public IPs), call the init command, and then it will start saving the logs of those commands to the files specified in the config. This should overwrite any preexisting payloads, so no need to spin up and destroy droplets everytime.
+to deliver the specified payloads to the droplets (including `public_ipv4s.json` and `public_ipv4s.sh` files with all the deployed droplet's public IPs), call the init command, and then it will start saving the logs of those commands to the files specified in the config. This should overwrite any preexisting payloads, so no need to spin up and destroy droplets everytime.
 
 don't forget to change back the pulumi directory and spin down the nodes by following the prompts after calling 
 
