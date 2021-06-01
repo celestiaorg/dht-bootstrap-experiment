@@ -91,17 +91,22 @@ func InitCmd() *cobra.Command {
 				return err
 			}
 
-			// deliver the payloads via scp
-			for name, conn := range manager.Conns {
-				err = conn.DeliverPayload()
-				if err != nil {
-					fmt.Println(err)
-				}
-				fmt.Println("delivered payload for: name", name)
-			}
-
-			// run initial commands and forward their Stdouts and Stderrs to local files
+			// async deliver the payloads via scp
 			var wg sync.WaitGroup
+			for name, conn := range manager.Conns {
+				wg.Add(1)
+				go func(n string, c Connection) {
+					defer wg.Done()
+					err = c.DeliverPayload()
+					if err != nil {
+						fmt.Println(err)
+					}
+					fmt.Println("delivered payload for: name", n)
+				}(name, conn)
+			}
+			wg.Wait()
+
+			// run initial commands and forward their Stdouts and Stderrs to a local file
 			for name, conn := range manager.Conns {
 				wg.Add(1)
 				go func(n string, c Connection) {
@@ -112,7 +117,7 @@ func InitCmd() *cobra.Command {
 							log.Println(fmt.Errorf("failure to run command %s on %s: %w", command, n, err))
 							continue
 						}
-						fmt.Println("ran command", command, "on", n)
+						fmt.Printf("ran command %s on %s\n", command, n)
 					}
 
 				}(name, conn)
