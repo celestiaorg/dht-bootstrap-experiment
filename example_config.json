@@ -1,0 +1,29 @@
+{
+    "ssh_key_id": "2c:64:cd:ea:db:c7:f4:5e:13:50:ce:81:47:db:0f:ef",
+    "tag": "devnet",
+    "droplets": {
+        "validator1": {
+            "location": "nyc3",
+            "size": "s-1vcpu-1gb",
+            "name": "val1",
+            "type": 0,
+            "payload": "path/to/payloads/validator/",
+            "init_commands": [
+                "source ./validator/init.sh"
+            ], 
+            "output": "/path/to/live/log/output/validator1.txt"
+        },
+        "validator2": {
+            "location": "nyc3",
+            "size": "s-1vcpu-1gb",
+            "name": "val2",
+            "type": 0,
+            "payload": "path/to/payloads/validator/",
+            "init_commands": [
+                "source ./validator/init.sh"
+            ], 
+            "output": "/path/to/live/log/output/validator2.txt"
+        }
+        
+    }
+}

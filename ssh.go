@@ -19,10 +19,10 @@ type SSHManager struct {
 	Conns map[string]Connection
 }
 
-func NewSSHManager(drops map[string]config.Droplet) (*SSHManager, error) {
+func NewSSHManager(drops map[string]config.Droplet, sshPass string) (*SSHManager, error) {
 	conns := make(map[string]Connection)
 	for name, drop := range drops {
-		conn, err := NewConnection(drop)
+		conn, err := NewConnection(drop, sshPass)
 		if err != nil {
 			return nil, err
 		}
@@ -53,7 +53,7 @@ type Connection struct {
 	output *os.File
 }
 
-func NewConnection(drop config.Droplet) (Connection, error) {
+func NewConnection(drop config.Droplet, sshPass string) (Connection, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return Connection{}, err
@@ -64,7 +64,6 @@ func NewConnection(drop config.Droplet) (Connection, error) {
 		return Connection{}, err
 	}
 
-	sshPass := os.Getenv("SSH_PASSWORD")
 	sshConfig, err := newSshClientConfig("root", host, 22, home+"/.ssh/id_rsa", sshPass)
 	if err != nil {
 		return Connection{}, err

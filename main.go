@@ -7,18 +7,23 @@ import (
 	"os"
 	"sync"
 
+	"github.com/BurntSushi/toml"
 	"github.com/digitalocean/godo"
 	"github.com/evan-forbes/devnet/config"
+	llconfig "github.com/lazyledger/lazyledger-core/config"
 	"github.com/spf13/cobra"
 )
 
 func main() {
 	rootCmd := cobra.Command{
-		Use:     "root command",
+		Use:     "devnet",
 		Aliases: []string{"devnet"},
 	}
 
-	rootCmd.AddCommand(InitCmd())
+	rootCmd.AddCommand(
+		InitCmd(),
+		NewTendermintConfigCmd(),
+	)
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -28,8 +33,9 @@ func main() {
 
 func InitCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:     "initialize deployment",
+		Use:     "init",
 		Aliases: []string{"init", "i"},
+		Args:    cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			// get the digital ocean token from the env vars
 			doat := os.Getenv("DIGITALOCEAN_ACCESS_TOKEN")
@@ -38,23 +44,50 @@ func InitCmd() *cobra.Command {
 			client := godo.NewFromToken(doat)
 
 			// load the config from the working dir
-			conf, err := config.LoadConfig("config.json")
+			conf, err := config.LoadConfig(args[0])
 			if err != nil {
 				return err
 			}
+			fmt.Println("loaded the config")
 
 			// connect each existing do droplet to the configered ones
 			conf, err = conf.Match(context.TODO(), client)
 			if err != nil {
 				return err
 			}
+			fmt.Println("matched all droplets to configured ones")
+
+			// fetch the ssh password if any
+			fmt.Println("getting ssh pass")
+			sshPass := os.Getenv("SSH_PASS")
+			fmt.Println("found ssh pass", sshPass)
+			switch sshPass {
+			case "nil":
+				sshPass = ""
+			case "":
+				fmt.Scanf(
+					"password to ssh key (press enter for no password or alternatively export as SSH_PASS): %s",
+					&sshPass,
+				)
+			default:
+
+			}
+			fmt.Println("setting ssh pass")
 
 			// establish ssh connections to each droplet
-			manager, err := NewSSHManager(conf.Droplets)
+			manager, err := NewSSHManager(conf.Droplets, sshPass)
 			if err != nil {
 				return err
 			}
+			fmt.Println("created new ssh manager")
+
 			defer manager.CloseAll()
+
+			err = conf.WriteIPs()
+			if err != nil {
+				return err
+			}
+			fmt.Println("wrote public IPs to payloads")
 
 			// deliver the payloads via scp
 			for name, conn := range manager.Conns {
@@ -77,7 +110,7 @@ func InitCmd() *cobra.Command {
 							log.Println(fmt.Errorf("failure to run command %s on %s: %w", command, n, err))
 							continue
 						}
-						fmt.Println("ran comnmand", command, "on", n)
+						fmt.Println("ran command", command, "on", n)
 					}
 
 				}(name, conn)
@@ -87,4 +120,37 @@ func InitCmd() *cobra.Command {
 			return nil
 		},
 	}
+}
+
+func NewTendermintConfigCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:     "creates a default tendermint config at the path provided",
+		Aliases: []string{"newLazyConfig", "i"},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			path := "."
+			if len(args) == 1 {
+				path = args[0]
+			}
+			WriteTendermintConfig(path, llconfig.DefaultConfig())
+			return nil
+		},
+	}
+}
+
+func LoadTendermintConfig(path string) (llconfig.Config, error) {
+	var cfg llconfig.Config
+	_, err := toml.DecodeFile(path, &cfg)
+	if err != nil {
+		return cfg, fmt.Errorf("failed to load config from %q: %w", path, err)
+	}
+	return cfg, cfg.ValidateBasic()
+}
+
+func WriteTendermintConfig(path string, cfg *llconfig.Config) error {
+	err := cfg.ValidateBasic()
+	if err != nil {
+		return err
+	}
+	llconfig.WriteConfigFile(path, cfg)
+	return nil
 }

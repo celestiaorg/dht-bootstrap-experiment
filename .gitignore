@@ -1,2 +1,6 @@
 /vendor/
 
+payloads
+
+config.json
+test-confing.toml

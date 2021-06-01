@@ -47,6 +47,10 @@ type Droplet struct {
 	Drop   godo.Droplet
 }
 ```
+
+## Usage
+
+### Configure your deployment
 here's an example config
 ```json
 {
@@ -81,16 +85,12 @@ here's an example config
 }
 
 ```
-## Usage
 
 go to the pulumi directory
 
 ```
 cd ./pulumi
 ```
-
-
-
 
 after setting up pulumi, spin up the nodes by following the prompts
 
@@ -100,7 +100,12 @@ pulumi up
 
 compile `devnet` by calling `go build` in this directory
 
-call `devnet init` to deliver the specified payloads to the droplets, call the initial commands, and then it will start saving the logs of those commands to the files specified in the config. This should overwrite any preexisting payloads, so no need to spin up the nodes everytime.
+call 
+```
+devnet init /path/to/config.json
+``` 
+
+to deliver the specified payloads to the droplets (including a `public_ipv4s.json` file with all the deployed droplet's public IPs), call the initial commands, and then it will start saving the logs of those commands to the files specified in the config. This should overwrite any preexisting payloads, so no need to spin up and destroy droplets everytime.
 
 don't forget to change back the pulumi directory and spin down the nodes by following the prompts
 

@@ -34,6 +34,8 @@ type Droplet struct {
 	Payload string `json:"payload"`
 	// InitCommands are the ssh commands run after payload is delivered
 	InitCommands []string `json:"init_commands"`
+	// Peers contains the names of the other droplets to connect to
+	Peers []string
 	// Output is the path to output file
 	Output string `json:"output"`
 	Drop   godo.Droplet
@@ -59,6 +61,7 @@ func (n NodeType) String() string {
 	case DHT:
 		return "DHT"
 	default:
+		// panic here?
 		return "unrecognized node type"
 	}
 }
@@ -121,6 +124,15 @@ func (c Config) ValidateBasic() error {
 	if len(c.SSHKeyID) == 0 {
 		return errors.New("no ssh key finger print provided")
 	}
+	for name, drop := range c.Droplets {
+		for _, peer := range drop.Peers {
+			if _, has := c.Droplets[peer]; !has {
+				return fmt.Errorf(
+					"%s has a peer, %s, who is not defined in the Config", name, peer,
+				)
+			}
+		}
+	}
 	return nil
 }
 
@@ -131,4 +143,40 @@ func WriteConfig(path string, config Config) error {
 	}
 
 	return ioutil.WriteFile(path, configData, 0700)
+}
+
+// WriteIPs collects all of the public IPv4s of the existing droplets and writes
+// them to each unique payload path
+func (c Config) WriteIPs() error {
+	ips, err := c.exportIPs()
+	if err != nil {
+		return err
+	}
+	data, err := json.MarshalIndent(ips, "", "  ")
+	if err != nil {
+		return err
+	}
+	uniquePayloadPaths := make(map[string]struct{})
+	for _, drop := range c.Droplets {
+		uniquePayloadPaths[drop.Payload] = struct{}{}
+	}
+	for payPath := range uniquePayloadPaths {
+		err = ioutil.WriteFile(fmt.Sprintf("%s/%s", payPath, "public_ipv4s.json"), data, 0700)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c Config) exportIPs() (map[string]string, error) {
+	out := make(map[string]string)
+	for name, drop := range c.Droplets {
+		ipv4, err := drop.Drop.PublicIPv4()
+		if err != nil {
+			return nil, err
+		}
+		out[name] = ipv4
+	}
+	return out, nil
 }
