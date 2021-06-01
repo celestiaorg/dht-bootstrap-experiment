@@ -48,25 +48,24 @@ func InitCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			fmt.Println("loaded the config")
 
 			// connect each existing do droplet to the configered ones
 			conf, err = conf.Match(context.TODO(), client)
 			if err != nil {
 				return err
 			}
-			fmt.Println("matched all droplets to configured ones")
 
 			// fetch the ssh password if any
-			fmt.Println("getting ssh pass")
 			sshPass := os.Getenv("SSH_PASS")
-			fmt.Println("found ssh pass", sshPass)
 			switch sshPass {
 			case "nil":
 				sshPass = ""
 			case "":
+				fmt.Println(
+					"password to ssh key (press enter for no password or alternatively export as SSH_PASS). export as 'nil' to ignore future requests",
+				)
 				fmt.Scanf(
-					"password to ssh key (press enter for no password or alternatively export as SSH_PASS): %s",
+					"%s",
 					&sshPass,
 				)
 			default:

@@ -2,5 +2,6 @@
 
 payloads
 
-config.json
+./config.json
+
 test-confing.toml
