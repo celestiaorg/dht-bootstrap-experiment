@@ -1,1 +1,0 @@
-This package is just so I don't have to edit tendermint config files using bash scripts
