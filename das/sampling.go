@@ -59,7 +59,7 @@ func Sample(ctx context.Context, host string, iterations int) ([]time.Duration, 
 	}
 	defer cls.Close()
 
-	client, err := tmclient.New(host)
+	client, err := tmclient.New("tcp://" + host)
 	if err != nil {
 		fmt.Println(err, 1)
 		os.Exit(1)
@@ -83,6 +83,7 @@ func Sample(ctx context.Context, host string, iterations int) ([]time.Duration, 
 		total := end.Sub(start)
 		fmt.Printf("#DATA sample %d %dms\n", i, total.Milliseconds())
 		sampleTimes = append(sampleTimes, total)
+		time.Sleep(20)
 	}
 
 	return sampleTimes, nil

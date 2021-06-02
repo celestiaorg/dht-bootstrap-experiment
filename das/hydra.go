@@ -61,8 +61,20 @@ func AddHydraIDs(ctx context.Context, hydraIP, cfgPath string) error {
 	if err != nil {
 		return err
 	}
+
 	boots := make([]string, 0)
-	boots = append(cfg.Bootstrap, ids...)
+	unique := make(map[string]struct{})
+	for _, addr := range cfg.Bootstrap {
+		unique[addr] = struct{}{}
+	}
+
+	for _, addr := range ids {
+		if _, has := unique[addr]; has {
+			continue
+		}
+		boots = append(boots, addr)
+	}
+
 	cfg.Bootstrap = boots
 
 	return fsrepo.WriteConfigFile(cfgPath, cfg)
@@ -75,9 +87,9 @@ type hydraHeadsResp struct {
 
 func (h hydraHeadsResp) IDs() []string {
 	out := make([]string, len(h.Addrs))
+
 	for i, addr := range h.Addrs {
-		fmt.Println(fmt.Sprintf("%s/p2p/$%s", addr, h.ID))
-		out[i] = fmt.Sprintf("%s/p2p/$%s", addr, h.ID)
+		out[i] = fmt.Sprintf("%s/p2p/%s", addr, h.ID)
 	}
 	return out
 }

@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/digitalocean/godo v1.61.0
+	github.com/ipfs/go-ipfs-config v0.11.0
 	github.com/lazyledger/lazyledger-core v0.0.0-20210531043323-6a4b0a7f21a8
 	github.com/lazyledger/nmt v0.5.0
 	github.com/pulumi/pulumi-digitalocean/sdk/v4 v4.3.1
