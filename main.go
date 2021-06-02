@@ -66,16 +66,13 @@ func InitCmd() *cobra.Command {
 					&sshPass,
 				)
 			default:
-
 			}
-			fmt.Println("setting ssh pass")
 
 			// establish ssh connections to each droplet
 			manager, err := NewSSHManager(conf.Droplets, sshPass)
 			if err != nil {
 				return err
 			}
-			fmt.Println("created new ssh manager")
 
 			defer manager.CloseAll()
 
