@@ -1,0 +1,44 @@
+{
+    "ssh_key_id": "2c:64:cd:ea:db:c7:f4:5e:13:50:ce:81:47:db:0f:ef",
+    "tag": "devnet",
+    "droplets": {
+        "validator1nyc3": {
+            "location": "nyc3",
+            "size": "s-1vcpu-1gb",
+            "name": "val1",
+            "type": 0,
+            "payload": "./payloads/validator",
+            "init_commands": [                
+                "./validator/tendermint init",
+                "source /root/validator/init.sh",
+                "sed -i 's_tcp://127.0.0.1:26657_tcp://0.0.0.0:26657_g' /root/.tendermint/config/config.toml",
+                "./validator/tendermint node --proxy-app=kvstore"
+
+            ], 
+            "output": "./logs/validator1-nyc3.log"
+        },
+        "light1tor1": {
+            "location": "tor1",
+            "size": "s-1vcpu-1gb",
+            "name": "light1",
+            "type": 2,
+            "payload": "./payloads/light",
+            "init_commands": [
+                "source /root/light/init.sh"
+            ],
+            "output": "./logs/light1-tor1.log"
+        },
+        "dht1sgp1": {
+            "location": "sgp1",
+            "size": "s-1vcpu-1gb",
+            "name": "light1",
+            "type": 3,
+            "payload": "./payloads/dht",
+            "init_commands": [
+                "source /root/dht/init.sh"
+            ],
+            "output": "./logs/dht1-sgp1.log"
+        }
+        
+    }
+}

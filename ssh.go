@@ -93,7 +93,14 @@ func (c Connection) DeliverPayload() error {
 		return err
 	}
 
-	cmd := exec.Command("scp", "-r", c.drop.Payload, fmt.Sprintf("root@%s:/root/", ipv4))
+	cmd := exec.Command(
+		"scp",
+		"-r",
+		"-o StrictHostKeyChecking=no",
+		"-o UserKnownHostsFile=/dev/null",
+		c.drop.Payload,
+		fmt.Sprintf("root@%s:/root/", ipv4),
+	)
 	err = cmd.Run()
 	if err != nil {
 		return fmt.Errorf("failure to execute command: %w", err)

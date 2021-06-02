@@ -1,0 +1,25 @@
+I[2021-06-02|19:35:03.405] IPFS is already initialized                  ipfs-path=ipfs
+I[2021-06-02|19:35:03.753] Successfully created embedded IPFS node      ipfs-repo=ipfs
+I[2021-06-02|19:35:05.899] Successfully created embedded IPFS node      ipfs-repo=ipfs
+#DATA sample 0 364ms
+#DATA sample 1 138ms
+#DATA sample 2 221ms
+#DATA sample 3 100ms
+#DATA sample 4 96ms
+#DATA sample 5 106ms
+#DATA sample 6 174ms
+#DATA sample 7 94ms
+#DATA sample 8 108ms
+#DATA sample 9 104ms
+data-start--------------
+0 364
+1 138
+2 221
+3 100
+4 96
+5 106
+6 174
+7 94
+8 108
+9 104
+data-end----------------

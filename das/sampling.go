@@ -82,7 +82,7 @@ func Sample(ctx context.Context, host string, iterations int) ([]time.Duration, 
 		end := time.Now()
 		total := end.Sub(start)
 		fmt.Printf("#DATA sample %d %dms\n", i, total.Milliseconds())
-		sampleTimes = append(sampleTimes, total)
+		sampleTimes[i] = total
 		time.Sleep(20)
 	}
 

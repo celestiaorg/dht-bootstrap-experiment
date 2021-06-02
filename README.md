@@ -1,29 +1,22 @@
-# devnet
+# DHT Bootstrap Experiment
 
-This is a quick repo to spin up digital ocean droplets, deliver payloads, issue commands to, and collect the logs in real time of those droplets using a config.
+This is a template repo to spin up digital ocean droplets, deliver payloads, issue commands to, and collect the logs in real time of those droplets using a config. Currently, it is configured to run an experiment to collect rough data on how long it takes to randomly sample from block data produced by a single lazyledger-core node.
 
 ## Install
-currently using pulumi to manage spinning up and down droplets. We could just use the digital ocean go API or terraform, but this seemed like a better way to make sure that we don't spin up too many droplets, while not using the terraform DSL. This can change.
-
-install `pulumi` [here](https://www.pulumi.com/docs/get-started/install/)
+### Install and setup pulumi
+https://www.pulumi.com/docs/get-started/install/
 
 clone or fork this repo
 
-## Upload a SSH public key to digital
+### Upload a SSH public key to digital ocean
 
-have a public ssh key uploaded to DO [uploaded to DO](https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/to-account/)
+get the fingerprint of the ssh key uploaded to DO. [instructions](https://docs.digitalocean.com/products/droplets/how-to/add-ssh-keys/to-account/)
 
-## Export your DO access token
+## Usage
 
-```sh
-export DIGITALOCEAN_ACCESS_TOKEN="your token"
-# the program will ask you to type your ssh password during execution if you don't want to export it. 
-# Can also set to "nil" to ignore prompt and use "" as a password. 
-# It also looks for the signing key in the default location $HOME/.ssh/ and this has to be changed manually as of now.
-export SSH_PASS="your ssh pass"
-```
+### Configure your deployment
 
-## Configuration
+### Configuration
 
 The config defines everything needed to spin up. Save it to this repo as `config.json`
 
@@ -57,37 +50,47 @@ type Droplet struct {
 }
 ```
 
-## Usage
-
-### Configure your deployment
-here's an example config
+edit `config.json` to add in your DO fingerprint, and path to output
 ```json
 {
-    "ssh_key_id": "put your DO ssh key finger print here",
-    "tag": "devnet",
+    "ssh_key_id": "***your DO ssh key fingerprint here***",
+    "tag": "DHT-bootstrap",
     "droplets": {
-        "validator1": {
+        "validator1nyc3": {
             "location": "nyc3",
             "size": "s-1vcpu-1gb",
             "name": "val1",
             "type": 0,
-            "payload": "path/to/payloads/validator/",
-            "init_commands": [
-                "source ./validator/init.sh"
+            "payload": "../payloads/validator",
+            "init_commands": [                
+                "/root/validator/tendermint init",
+                "source /root/validator/init.sh",
+                "sed -i 's_tcp://127.0.0.1:26657_tcp://0.0.0.0:26657_g' /root/.tendermint/config/config.toml",
+                "./validator/tendermint node --proxy-app=kvstore"
             ], 
-            "output": "/path/to/live/log/output/validator1.txt"
+            "output": "../logs/validator1-nyc3.log"
         },
-        "validator2": {
-            "location": "nyc3",
+        "light1tor1": {
+            "location": "tor1",
             "size": "s-1vcpu-1gb",
-            "name": "val2",
-            "type": 0,
-            "payload": "path/to/payloads/validator/",
+            "name": "light1",
+            "type": 2,
+            "payload": "../payloads/light",
             "init_commands": [
-                "source ./validator/init.sh",
-                "echo 'Im validator 2'",
-            ], 
-            "output": "/path/to/live/log/output/validator2.txt"
+                "source /root/light/init.sh"
+            ],
+            "output": "../logs/light1-tor1.log"
+        },
+        "dht1sgp1": {
+            "location": "sgp1",
+            "size": "s-1vcpu-1gb",
+            "name": "light1",
+            "type": 3,
+            "payload": "../payloads/dht",
+            "init_commands": [
+                "source /root/dht/init.sh"
+            ],
+            "output": "../logs/dht1-sgp1.log"
         }
         
     }
@@ -95,10 +98,20 @@ here's an example config
 
 ```
 
+## Export your DO access token
+
+```sh
+export DIGITALOCEAN_ACCESS_TOKEN="your token"
+# the program will ask you to type your ssh password during execution if you don't want to export it. 
+# Can also set to "nil" to ignore prompt and use "" as a password. 
+# It also looks for the signing key in the default location $HOME/.ssh/ and this has to be changed manually as of now.
+export SSH_PASS="your ssh pass"
+```
+
 go to the pulumi directory
 
 ```sh
-cd ./pulumi
+cd pulumi
 ```
 
 after setting up pulumi, spin up the nodes by following the prompts
@@ -107,11 +120,11 @@ after setting up pulumi, spin up the nodes by following the prompts
 pulumi up
 ```
 
-compile `devnet` by calling `go build` in this directory
+compile by calling `go build -o arbitrary-binary-name` in the root of this directory
 
 call 
 ```sh
-devnet init /path/to/config.json
+aritrary-binary-name init config.json
 ``` 
 
 to deliver the specified payloads to the droplets (including `public_ipv4s.json` and `public_ipv4s.sh` files with all the deployed droplet's public IPs), call the init command, and then it will start saving the logs of those commands to the files specified in the config. This should overwrite any preexisting payloads, so no need to spin up and destroy droplets everytime.

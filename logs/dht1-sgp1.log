@@ -1,0 +1,35 @@
+🐉 Hydra Booster starting up...
+📊 Prometheus metrics and pprof server listening on http://127.0.0.1:9758
+🥞 Using LevelDB datastore
+💭 Using in-memory peerstore
+🐲 Spawning 1 heads: .
+🆔 12D3KooWSPNkjiaW5fbUtzg6qvMcqQcvESsX8hqrFzYUcwvK2w15
+🐝 Swarm listening on /ip4/206.189.92.66/tcp/46055
+🐝 Swarm listening on /ip4/127.0.0.1/tcp/46055
+🐝 Swarm listening on /ip4/206.189.92.66/udp/55520/quic
+🐝 Swarm listening on /ip4/127.0.0.1/udp/55520/quic
+🧩 HTTP API listening on http://0.0.0.0:7779
+[NumHeads: 1, Uptime: 0s, MemoryUsage: 22 MB, PeersConnected: 0, TotalUniquePeersSeen: 0, BootstrapsDone: 0, ProviderRecords: 0, RoutingTableSize: 0]
+[NumHeads: 1, Uptime: 5s, MemoryUsage: 39 MB, PeersConnected: 38, TotalUniquePeersSeen: 39, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 36]
+[NumHeads: 1, Uptime: 10s, MemoryUsage: 27 MB, PeersConnected: 59, TotalUniquePeersSeen: 59, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 53]
+[NumHeads: 1, Uptime: 15s, MemoryUsage: 43 MB, PeersConnected: 97, TotalUniquePeersSeen: 98, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 73]
+[NumHeads: 1, Uptime: 20s, MemoryUsage: 31 MB, PeersConnected: 121, TotalUniquePeersSeen: 122, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 75]
+[NumHeads: 1, Uptime: 25s, MemoryUsage: 41 MB, PeersConnected: 140, TotalUniquePeersSeen: 143, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 78]
+[NumHeads: 1, Uptime: 30s, MemoryUsage: 48 MB, PeersConnected: 156, TotalUniquePeersSeen: 161, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 81]
+[NumHeads: 1, Uptime: 35s, MemoryUsage: 31 MB, PeersConnected: 173, TotalUniquePeersSeen: 185, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 83]
+[NumHeads: 1, Uptime: 40s, MemoryUsage: 39 MB, PeersConnected: 184, TotalUniquePeersSeen: 199, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 84]
+[NumHeads: 1, Uptime: 45s, MemoryUsage: 50 MB, PeersConnected: 206, TotalUniquePeersSeen: 226, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 87]
+[NumHeads: 1, Uptime: 50s, MemoryUsage: 33 MB, PeersConnected: 216, TotalUniquePeersSeen: 243, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 88]
+[NumHeads: 1, Uptime: 55s, MemoryUsage: 38 MB, PeersConnected: 219, TotalUniquePeersSeen: 254, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 89]
+[NumHeads: 1, Uptime: 1m0s, MemoryUsage: 48 MB, PeersConnected: 229, TotalUniquePeersSeen: 273, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 90]
+[NumHeads: 1, Uptime: 1m5s, MemoryUsage: 54 MB, PeersConnected: 233, TotalUniquePeersSeen: 289, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 90]
+[NumHeads: 1, Uptime: 1m10s, MemoryUsage: 39 MB, PeersConnected: 246, TotalUniquePeersSeen: 308, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 91]
+[NumHeads: 1, Uptime: 1m15s, MemoryUsage: 56 MB, PeersConnected: 261, TotalUniquePeersSeen: 330, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 100]
+[NumHeads: 1, Uptime: 1m20s, MemoryUsage: 64 MB, PeersConnected: 269, TotalUniquePeersSeen: 345, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 100]
+[NumHeads: 1, Uptime: 1m25s, MemoryUsage: 42 MB, PeersConnected: 280, TotalUniquePeersSeen: 367, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 102]
+[NumHeads: 1, Uptime: 1m30s, MemoryUsage: 60 MB, PeersConnected: 303, TotalUniquePeersSeen: 398, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 119]
+[NumHeads: 1, Uptime: 1m35s, MemoryUsage: 39 MB, PeersConnected: 313, TotalUniquePeersSeen: 413, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 119]
+[NumHeads: 1, Uptime: 1m40s, MemoryUsage: 44 MB, PeersConnected: 307, TotalUniquePeersSeen: 420, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 119]
+[NumHeads: 1, Uptime: 1m45s, MemoryUsage: 59 MB, PeersConnected: 320, TotalUniquePeersSeen: 447, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 133]
+[NumHeads: 1, Uptime: 1m50s, MemoryUsage: 68 MB, PeersConnected: 322, TotalUniquePeersSeen: 464, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 133]
+[NumHeads: 1, Uptime: 1m55s, MemoryUsage: 44 MB, PeersConnected: 326, TotalUniquePeersSeen: 480, BootstrapsDone: 1, ProviderRecords: 0, RoutingTableSize: 133]
